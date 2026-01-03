@@ -1,0 +1,14 @@
+node_modules
+.git
+.env
+.env.example
+.state.json
+README.md
+biome.json
+docker-compose.yml
+Dockerfile
+.dockerignore
+.gitignore
+settings.json
+settings.json.sample
+tsconfig.tsbuildinfo

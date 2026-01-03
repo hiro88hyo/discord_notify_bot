@@ -1,0 +1,19 @@
+{
+  "name": "discord_notify_bot",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.10",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.36.0",
+    "date-fns": "^4.1.0",
+    "hono": "^4.11.3",
+    "zod": "^4.3.4"
+  }
+}

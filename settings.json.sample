@@ -1,0 +1,11 @@
+{
+    "rules": [
+        {
+            "coinId": "ethereum",
+            "currency": "usd",
+            "threshold": 3030,
+            "direction": "above",
+            "cooldownMs": 1800000
+        }
+    ]
+}
