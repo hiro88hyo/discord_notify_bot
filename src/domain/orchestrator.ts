@@ -64,4 +64,9 @@ export class Orchestrator {
             }
         }
     }
+
+    updateWatchers(newWatchers: Watcher[]): void {
+        console.log(`Updating watchers: ${this.watchers.length} -> ${newWatchers.length}`);
+        this.watchers = newWatchers;
+    }
 }
