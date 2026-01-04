@@ -11,7 +11,10 @@ export interface CryptoWatcherConfig {
 export class CryptoWatcher implements Watcher {
     public readonly id: string;
 
-    constructor(private config: CryptoWatcherConfig) {
+    constructor(
+        private config: CryptoWatcherConfig,
+        private apiKey?: string
+    ) {
         this.id = `crypto-${config.coinId}-${config.currency}-${config.direction}-${config.threshold}`;
     }
 
@@ -19,8 +22,16 @@ export class CryptoWatcher implements Watcher {
         const { coinId, currency, threshold, direction } = this.config;
         console.log(`Starting crypto price check for ${coinId}...`);
         try {
+            const headers: Record<string, string> = {
+                "Accept": "application/json",
+            };
+            if (this.apiKey) {
+                headers["x-cg-demo-api-key"] = this.apiKey;
+            }
+
             const response = await fetch(
-                `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=${currency}`
+                `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=${currency}`,
+                { headers }
             );
             console.log(`API response received. Status: ${response.status}`);
 

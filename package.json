@@ -3,9 +3,16 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run src/app.ts",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
-    "@types/bun": "latest"
+    "@cloudflare/workers-types": "^4.20260103.0",
+    "@types/bun": "latest",
+    "wrangler": "^4.54.0"
   },
   "peerDependencies": {
     "typescript": "^5"

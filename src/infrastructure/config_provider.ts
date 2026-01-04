@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { Redis } from "@upstash/redis";
-import { type CryptoRule, settingsSchema } from "../config";
+import { type CryptoRule, settingsSchema } from "../schemas";
 
 export class ConfigProvider {
     private redis: Redis | null = null;

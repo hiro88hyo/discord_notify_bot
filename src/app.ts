@@ -42,7 +42,7 @@ const orchestrator = new Orchestrator(
 async function reloadConfig() {
     try {
         const rules = await configProvider.getRules();
-        const watchers = rules.map((rule) => new CryptoWatcher(rule));
+        const watchers = rules.map((rule) => new CryptoWatcher(rule, config.COINGECKO_API_KEY));
         orchestrator.updateWatchers(watchers);
     } catch (e) {
         console.error("Failed to reload config:", e);

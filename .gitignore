@@ -36,3 +36,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Local config and state
 settings.json
 .state.json
+
+# wrangler.toml
+wrangler.toml
