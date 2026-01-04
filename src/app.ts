@@ -8,10 +8,14 @@ import { CryptoWatcher } from "./watchers/crypto";
 import { RedisStateStore } from "./infrastructure/redis_state_store";
 import { type StateStore } from "./domain/types";
 
+import { ConfigProvider } from "./infrastructure/config_provider";
+
 const app = new Hono();
 
-const watchers = config.CRYPTO_WATCH_CONFIG.map(
-    (rule) => new CryptoWatcher(rule)
+// Initialize Config Provider
+const configProvider = new ConfigProvider(
+    config.UPSTASH_REDIS_REST_URL,
+    config.UPSTASH_REDIS_REST_TOKEN
 );
 
 const notifier = new DiscordNotifier(config.DISCORD_WEBHOOK_URL);
@@ -26,18 +30,45 @@ if (config.STATE_STORE_TYPE === "redis") {
 } else {
     store = new JsonFileStateStore();
 }
+
 const orchestrator = new Orchestrator(
-    watchers,
+    [], // Initial empty watchers
     notifier,
     store,
     3600000 // Default cooldown if not specified in alert
 );
 
+// Helper to reload config
+async function reloadConfig() {
+    try {
+        const rules = await configProvider.getRules();
+        const watchers = rules.map((rule) => new CryptoWatcher(rule));
+        orchestrator.updateWatchers(watchers);
+    } catch (e) {
+        console.error("Failed to reload config:", e);
+    }
+}
+
+// Initial load
+await reloadConfig();
+
 app.post("/trigger", async (c) => {
     console.log("Trigger received");
+    await reloadConfig();
     await orchestrator.runChecks();
     return c.json({ message: "Checks completed" });
 });
+
+if (config.EXECUTION_MODE === "periodic") {
+    console.log(`Starting periodic checks every ${config.PERIODIC_INTERVAL_MS}ms`);
+    setInterval(async () => {
+        console.log("Running periodic checks");
+        await reloadConfig();
+        orchestrator.runChecks().catch((err) => {
+            console.error("Periodic check failed", err);
+        });
+    }, config.PERIODIC_INTERVAL_MS);
+}
 
 app.get("/", (c) => c.text("Discord Notify Bot is running"));
 

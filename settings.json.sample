@@ -3,7 +3,7 @@
         {
             "coinId": "ethereum",
             "currency": "usd",
-            "threshold": 3030,
+            "threshold": 3095,
             "direction": "above",
             "cooldownMs": 1800000
         }

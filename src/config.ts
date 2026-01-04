@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { z } from "zod";
 
-const cryptoRuleSchema = z.object({
+export const cryptoRuleSchema = z.object({
     coinId: z.string(),
     currency: z.string(),
     threshold: z.number(),
@@ -17,29 +17,13 @@ const envSchema = z.object({
     UPSTASH_REDIS_REST_URL: z.string().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
     STATE_STORE_TYPE: z.enum(["file", "redis"]).default("file"),
+    EXECUTION_MODE: z.enum(["webhook", "periodic"]).default("webhook"),
+    PERIODIC_INTERVAL_MS: z.coerce.number().default(60000), // Default 1 minute
 });
 
-const settingsSchema = z.object({
+export const settingsSchema = z.object({
     rules: z.array(cryptoRuleSchema),
 });
 
 // Load Env
-const envConfig = envSchema.parse(process.env);
-
-// Load Settings File
-let settingsConfig = { rules: [] as CryptoRule[] };
-try {
-    if (existsSync("settings.json")) {
-        const fileContent = readFileSync("settings.json", "utf-8");
-        settingsConfig = settingsSchema.parse(JSON.parse(fileContent));
-    } else {
-        console.warn("settings.json not found, using empty rules");
-    }
-} catch (e) {
-    console.error("Failed to load settings.json", e);
-}
-
-export const config = {
-    ...envConfig,
-    CRYPTO_WATCH_CONFIG: settingsConfig.rules,
-};
+export const config = envSchema.parse(process.env);
